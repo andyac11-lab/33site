@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>33site - Intelligence = Wealth</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 10px;
+            color: white;
+            text-align: left;
+            font-size: 24px;
+        }
+        header h1 {
+            margin: 0;
+        }
+        header p {
+            font-size: 14px;
+        }
+        .main-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .wallet-info {
+            font-size: 18px;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        .question-container {
+            display: none;
+            text-align: center;
+        }
+        .question {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .answer-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+        .answer-buttons button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .answer-buttons button:hover {
+            background-color: #45a049;
+        }
+        .timer {
+            font-size: 18px;
+            margin-top: 20px;
+            color: red;
+        }
+        .message {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .deposit-form {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .deposit-form input, .deposit-form button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>33site</h1>
+        <p>Intelligence = Wealth</p>
+    </header>
+
+    <div class="main-container">
+        <div class="wallet-info" id="wallet-info">
+            Balance: <span id="balance">0</span> ZMW
+        </div>
+
+        <!-- Deposit Form -->
+        <div class="deposit-form">
+            <h2>Deposit Funds</h2>
+            <input type="number" id="deposit-amount" placeholder="Enter Amount" />
+            <button onclick="deposit()">Deposit</button>
+        </div>
+
+        <!-- Staking System -->
+        <div id="stake-container">
+            <h2>Select Account to Stake</h2>
+            <select id="account-select">
+                <option value="account1">Account 1</option>
+                <option value="account2">Account 2</option>
+            </select>
+            <button onclick="startQuestion()">Start Staking</button>
+        </div>
+
+        <!-- Question Timer and Answer Buttons -->
+        <div class="question-container" id="question-container">
+            <div class="question" id="question">What is 2 + 2?</div>
+            <div class="answer-buttons">
+                <button onclick="checkAnswer('A')">A: 3</button>
+                <button onclick="checkAnswer('B')">B: 4</button>
+                <button onclick="checkAnswer('C')">C: 5</button>
+                <button onclick="checkAnswer('D')">D: 6</button>
+                <button onclick="checkAnswer('E')">E: 7</button>
+            </div>
+            <div class="timer" id="timer">Time Remaining: 7s</div>
+        </div>
+
+        <!-- Message After Answer -->
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        let balance = 0;
+        let stakeAmount = 0;
+        let timer;
+        let timeLeft = 7;
+        let correctAnswer = 'B'; // Correct answer for the sample question
+
+        // Deposit Function
+        function deposit() {
+            const depositAmount = document.getElementById('deposit-amount').value;
+            if (depositAmount && depositAmount > 0) {
+                balance += parseFloat(depositAmount);
+                document.getElementById('balance').innerText = balance.toFixed(2);
+            }
+        }
+
+        // Start Question after Stake
+        function startQuestion() {
+            if (balance > 0) {
+                stakeAmount = balance;  // Assuming stake is equal to balance for simplicity
+                balance = 0;
+                document.getElementById('balance').innerText = balance.toFixed(2);
+                document.getElementById('message').innerText = '';
+                document.getElementById('stake-container').style.display = 'none';
+                document.getElementById('question-container').style.display = 'block';
+                startTimer();
+            } else {
+                alert('Please deposit money to stake.');
+            }
+        }
+
+        // Timer countdown
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = `Time Remaining: ${timeLeft}s`;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    document.getElementById('message').innerText = 'Time is up! Your stake is lost.';
+                    balance = 0;  // Reset balance after loss
+                    document.getElementById('balance').innerText = balance.toFixed(2);
+                    resetQuestion();
+                }
+            }, 1000);
+        }
+
+        // Check Answer Function
+        function checkAnswer(answer) {
+            clearInterval(timer);
+            if (answer === correctAnswer) {
+                balance = stakeAmount * 2; // Double the stake
+                document.getElementById('message').innerText = 'Correct! Your stake has been doubled!';
+            } else {
+                balance = 0; // Lose stake if wrong
+                document.getElementById('message').innerText = 'Incorrect! Your stake is lost.';
+            }
+            document.getElementById('balance').innerText = balance.toFixed(2);
+            resetQuestion();
+        }
+
+        // Reset Question and Timer
+        function resetQuestion() {
+            setTimeout(() => {
+                document.getElementById('question-container').style.display = 'none';
+                document.getElementById('stake-container').style.display = 'block';
+                timeLeft = 7;
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
